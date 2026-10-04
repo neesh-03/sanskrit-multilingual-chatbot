@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sanskrit Multilingual Chatbot</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 650px;
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        select,
+        input,
+        button {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+        }
+
+        select,
+        input {
+            background: #374151;
+            color: white;
+        }
+
+        select {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        #chat {
+            height: 300px;
+            overflow-y: auto;
+            background: #111827;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .user {
+            background: #2563eb;
+            text-align: right;
+        }
+
+        .bot {
+            background: #374151;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+        }
+
+        button {
+            background: #f59e0b;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #fbbf24;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <h1>संस्कृत • Multilingual Chatbot</h1>
+
+    <div class="subtitle">
+    English • संस्कृत | Computational Assistant
+</div>
+
+<div style="
+    display: inline-block;
+    background: #14532d;
+    color: #86efac;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 15px;
+">
+    ● ONLINE
+</div>
+
+    <select id="language">
+        <option value="english">English</option>
+        <option value="sanskrit">Sanskrit</option>
+    </select>
+
+    <div id="chat"></div>
+
+    <div class="input-row">
+        <input
+            type="text"
+            id="message"
+            placeholder="Type your message..."
+        >
+
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script>
+
+async function sendMessage() {
+
+    const messageInput = document.getElementById("message");
+    const message = messageInput.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    const language = document.getElementById("language").value;
+    const chat = document.getElementById("chat");
+
+    chat.innerHTML += `
+        <div class="message user">
+            ${message}
+        </div>
+    `;
+
+    messageInput.value = "";
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: message,
+            language: language
+        })
+    });
+
+    const data = await response.json();
+
+    chat.innerHTML += `
+        <div class="message bot">
+            ${data.response}
+        </div>
+    `;
+
+    chat.scrollTop = chat.scrollHeight;
+}
+document.getElementById("message").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
+</script>
+
+</body>
+</html>
