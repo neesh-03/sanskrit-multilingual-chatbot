@@ -55,7 +55,7 @@ def chat():
     # English responses
     else:
 
-        if "hello" in message or "hi" in message:
+        if "hello" in message or "hi" in message or "hey" in message:
             response = "Hello! How can I help you?"
 
         elif "who are you" in message:
